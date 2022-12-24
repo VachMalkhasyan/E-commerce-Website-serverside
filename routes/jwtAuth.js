@@ -58,17 +58,17 @@ router.post('/register',validInfo, async(req,res) =>{
              const user = await pool.query('SELECT * FROM users WHERE user_email =$1',[email]);
             if (user.rows.length===0){
                 
-                return res.status(401).json('PASSWORD OR EMAIL IS INCORRECT,PLEASE TRY AGAIN')
+                return res.status(401).send({"message":"PASSWORD OR EMAIL IS INCORRECT,PLEASE TRY AGAIN"})
             }
             const validPassword = await bcrypt.compare(password,user.rows[0].user_password)
             if(!validPassword){
-                return res.status(401).json('PASSWORD OR EMAIL IS INCORRECT,PLEASE TRY AGAIN')
+                return res.status(401).send({"message":"PASSWORD OR EMAIL IS INCORRECT,PLEASE TRY AGAIN"})
             }
 
             const token = jwtGenerator(user.rows[0].user_id)
 
             res.json({token})
-            
+            //res.send({"message":"Success","token":token})
         } catch (err) {
             console.log(err.message)
             return res.send('erora brnel')
